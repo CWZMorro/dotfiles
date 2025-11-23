@@ -1,20 +1,24 @@
 import os
 
-from libqtile import bar, layout, qtile, hook
+from libqtile import layout, qtile, hook
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
-from libqtile import widget as defWidget
 
 # qtile extra
 from qtile_extras.widget.decorations import PowerLineDecoration
-from qtile_extras import widget
+from qtile_extras import widget, bar
 
 # colors
 from colors import colors
 
-# custom layout
-from dwindle import Dwindle
-
+from widgets import (
+    clockWidgets,
+    CPUWidget,
+    Systray,
+    batteryWidget,
+    volumeWidget,
+    brightnessWidget,
+)
 import subprocess
 
 
@@ -22,6 +26,11 @@ import subprocess
 def autostart():
     home = os.path.expanduser("~/.config/qtile/autostart.sh")
     subprocess.Popen(["bash", home])
+
+
+@hook.subscribe.screen_change
+def autorandr(_event):
+    subprocess.run(["autorandr", "--change"])
 
 
 mod = "mod4"
@@ -179,12 +188,17 @@ layoutFormat = {
 }
 
 layouts = [
-    Dwindle(**layoutFormat)
+    # Dwindle(**layoutFormat)
     # layout.Columns(**layoutFormat),
     # layout.Max(),
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=2),
-    # layout.Bsp(**layoutFormat),
+    layout.Bsp(
+        ratio=1.0,
+        fair=False,
+        lower_right=True,
+        **layoutFormat,
+    ),
     # layout.Matrix(),
     # layout.MonadTall(),
     # layout.MonadWide(),
@@ -208,21 +222,6 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-
-def get_brightness():
-    try:
-        # Run the command and capture the output
-        command = "brightnessctl -m | awk -F, '{print $4}' | tr -d '%' "
-        result = subprocess.run(
-            command, shell=True, capture_output=True, text=True, check=True
-        )
-        # The output is the clean percentage number (e.g., "50")
-        brightness = result.stdout.strip()
-        return f"  {brightness}%"
-    except subprocess.CalledProcessError:
-        return "N/A"  # Return N/A if command fails
-
-
 powerLine = {
     "decorations": [
         PowerLineDecoration(
@@ -232,106 +231,31 @@ powerLine = {
 }
 
 
-def batteryWidget():
-    return [
-        widget.GenPollText(
-            background=colors["red"],
-            fmt="",
-        ),
-        widget.UPowerWidget(
-            background=colors["red"],
-            foreground=colors["white"],
-            battery_height=15,
-            battery_width=30,
-            text_charging="(Plugged In)",
-            text_discharging="(On Battery)",
-        ),
-        widget.Battery(
-            background=colors["red"],
-            foreground=colors["white"],
-            format="{percent:2.0%}",
-            padding=10,
-            **powerLine,
-        ),
-    ]
-
-
-def clockWidgets():
-    return [
-        widget.Clock(
-            background=colors["blue"],
-            foreground=colors["white"],
-            padding=10,
-            format="%Y-%m-%d %a",
-            **powerLine,
-        ),
-        widget.Clock(
-            background=colors["purple"],
-            foreground=colors["white"],
-            padding=10,
-            format="%H:%M",
-        ),
-    ]
-
-
-def CPUWidget():
-    return [
-        widget.TextBox(
-            background=colors["green"],
-            fmt="",
-            padding=5,
-        ),
-        defWidget.CPU(
-            background=colors["green"],
-            foreground=colors["white"],
-            format=": {load_percent}%",
-            update_interval=1.0,
-        ),
-        defWidget.Memory(
-            background=colors["green"],
-            foreground=colors["white"],
-            format=": {MemUsed:.2f}GB/{MemTotal:.2f}GB",
-            measure_mem="G",
-            update_interval=1.0,
-        ),
-        widget.TextBox(background=colors["green"], fmt="", **powerLine),
-    ]
-
-
 def init_bar():
-    widgets_list = [
-        widget.CurrentLayout(),
-        widget.GroupBox(),
-        widget.Prompt(),
-        widget.WindowName(),
-        widget.Chord(
-            chords_colors={"launch": (colors["purple"], colors["blue"])},
-            name_transform=lambda name: name.upper(),
-        ),
-        widget.Systray(padding=5, icon_size=25, **powerLine),
-        *batteryWidget(),
-        widget.Volume(
-            background=colors["orange"],
-            foreground=colors["black"],
-            fmt="   {}",
-            channel="Master",
-            padding=10,
-            **powerLine,
-        ),
-        widget.GenPollText(
-            background=colors["yellow"],
-            foreground=colors["black"],
-            name="brightness_display",
-            func=get_brightness,
-            update_interval=0.5,
-            format="{}",
-            padding=10,
-            **powerLine,
-        ),
-        *CPUWidget(),
-        *clockWidgets(),
-    ]
-    return bar.Bar(widgets_list, 30, margin=[5, 8, 3, 8])
+    widgets_list = (
+        [
+            widget.CurrentLayout(),
+            widget.GroupBox(),
+            widget.Prompt(),
+            widget.WindowName(),
+            widget.Chord(
+                chords_colors={"launch": (colors["purple"], colors["blue"])},
+                name_transform=lambda name: name.upper(),
+            ),
+        ]
+        + Systray(powerLine)
+        + batteryWidget(powerLine)
+        + volumeWidget(powerLine)
+        + brightnessWidget(powerLine)
+        + CPUWidget(powerLine)
+        + clockWidgets(powerLine)
+    )
+    return bar.Bar(
+        widgets_list,
+        30,
+        margin=[5, 8, 3, 8],
+        background=colors["black"],
+    )
 
 
 screens = [
