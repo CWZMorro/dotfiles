@@ -13,7 +13,7 @@ from colors import colors
 
 from widgets import (
     clockWidgets,
-    CPUWidget,
+    weatherWidget,
     Systray,
     batteryWidget,
     volumeWidget,
@@ -247,7 +247,7 @@ def init_bar():
         + batteryWidget(powerLine)
         + volumeWidget(powerLine)
         + brightnessWidget(powerLine)
-        + CPUWidget(powerLine)
+        + weatherWidget(powerLine)
         + clockWidgets(powerLine)
     )
     return bar.Bar(
