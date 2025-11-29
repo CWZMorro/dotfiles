@@ -13,5 +13,6 @@ if status is-interactive
     alias bonsai "cbonsai -li"
     alias weather "curl -s https://weather.gc.ca/rss/city/ab-50_e.xml | grep \"Current Conditions\""
     alias lg lazygit
+    alias tmat "tmux attach -t"
 
 end
