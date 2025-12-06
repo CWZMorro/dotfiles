@@ -2,6 +2,7 @@ from libqtile import widget as defWidget
 
 # qtile extra
 from qtile_extras import widget
+from qtile_extras.widget.decorations import BorderDecoration
 
 from colors import colors
 import subprocess
@@ -17,6 +18,17 @@ WEATHER_ICONS = {
     "snow": "󰼶",
     "fog": "󰖑",
 }
+
+
+def separator():
+    return [
+        defWidget.TextBox(
+            text="|",
+            foreground=colors["white"],
+            padding=10,
+            fontsize=14,
+        )
+    ]
 
 
 def get_weather_condition(condition_text):
@@ -74,7 +86,12 @@ def get_edmonton_weather():
 
             # Look for the specific entry titled "Current Conditions"
             for entry in root.findall("atom:entry", ns):
-                title = entry.find("atom:title", ns).text
+                title_node = entry.find("atom:title", ns)
+
+                if title_node is None:
+                    continue  # Skip if no title found
+
+                title = title_node.text
 
                 if title and title.startswith("Current Conditions:"):
                     data_part = title.split(": ", 1)[1]
@@ -97,6 +114,19 @@ def get_edmonton_weather():
         return "N/A"
 
 
+def underLine(color):
+    return {
+        "decorations": [
+            BorderDecoration(
+                colour=color,
+                border_width=[0, 0, 4, 0],  # Top, Right, Bottom, Left
+                padding_x=None,
+                padding_y=None,
+            )
+        ],
+    }
+
+
 def get_brightness():
     try:
         # Run the command and find the output
@@ -106,25 +136,30 @@ def get_brightness():
         )
         # The output is the clean percentage number (e.g., "50")
         brightness = result.stdout.strip()
-        return f"  {brightness}%"
+        return f" {brightness}%"
     except subprocess.CalledProcessError:
         return "N/A"  # Return N/A if command fails
 
 
-def clockWidgets(powerLine):
+def dateWidget():
     return [
         widget.Clock(
-            background=colors["blue"],
-            foreground=colors["white"],
-            padding=10,
+            background=colors["black"],
+            foreground=colors["blue"],
             format="%Y-%m-%d %a",
-            **powerLine,
-        ),
-        widget.Clock(
-            background=colors["purple"],
-            foreground=colors["white"],
             padding=10,
+            **underLine(colors["blue"]),
+        ),
+    ]
+
+
+def timeWidget():
+    return [
+        widget.Clock(
+            background=colors["black"],
+            foreground=colors["purple"],
             format="%H:%M",
+            **underLine(colors["purple"]),
         ),
     ]
 
@@ -153,71 +188,78 @@ def clockWidgets(powerLine):
 #     ]
 
 
-def Systray(powerLine):
-    return [widget.Systray(padding=5, icon_size=25, **powerLine)]
+def Systray():
+    return [
+        widget.Systray(
+            padding=5,
+            icon_size=25,
+        )
+    ]
 
 
-def batteryWidget(powerLine):
+def batteryWidget():
     return [
         widget.GenPollText(
-            background=colors["red"],
+            background=colors["black"],
             fmt="",
+            **underLine(colors["red"]),
         ),
         widget.UPowerWidget(
-            background=colors["red"],
-            foreground=colors["white"],
-            battery_height=15,
-            battery_width=30,
+            background=colors["black"],
+            foreground=colors["red"],
+            battery_height=12,
+            battery_width=28,
             text_charging="(Plugged In)",
             text_discharging="(On Battery)",
+            **underLine(colors["red"]),
         ),
         widget.Battery(
-            background=colors["red"],
-            foreground=colors["white"],
+            background=colors["black"],
+            foreground=colors["red"],
             format="{percent:2.0%}",
             padding=10,
-            **powerLine,
+            **underLine(colors["red"]),
         ),
     ]
 
 
-def volumeWidget(powerLine):
+def volumeWidget():
     return [
         widget.Volume(
-            background=colors["orange"],
-            foreground=colors["black"],
-            fmt="   {}",
+            background=colors["black"],
+            foreground=colors["orange"],
+            fmt=" {}",
             channel="Master",
             padding=10,
-            **powerLine,
+            **underLine(colors["orange"]),
         ),
     ]
 
 
-def brightnessWidget(powerLine):
+def brightnessWidget():
     return [
         widget.GenPollText(
-            background=colors["yellow"],
-            foreground=colors["black"],
+            background=colors["black"],
+            foreground=colors["yellow"],
             name="brightness_display",
             func=get_brightness,
             update_interval=0.5,
             format="{}",
             padding=10,
-            **powerLine,
+            **underLine(colors["yellow"]),
         ),
     ]
 
 
-def weatherWidget(powerLine):
+def weatherWidget():
     return [
         widget.GenPollText(
-            background=colors["green"],
-            foreground=colors["white"],
+            background=colors["black"],
+            foreground=colors["green"],
             func=get_edmonton_weather,
             update_interval=300,  # Update every 5 mins
             fmt="{}",
             padding=10,
-            **powerLine,
+            **underLine(colors["green"]),
         ),
     ]

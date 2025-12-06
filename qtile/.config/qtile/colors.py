@@ -1,10 +1,11 @@
 colors = {
-    "red": "#FF0000",
-    "orange": "#FFA500",
-    "yellow": "#FFFF00",
-    "green": "#008000",
-    "blue": "#0000FF",
-    "purple": "#800080",
-    "black": "#000000",
+    "red": "#f38ba8",
+    "orange": "#f2cdcd",
+    "yellow": "#f9e2af",
+    "green": "#a6e3a1",
+    "blue": "#89b4fa",
+    "purple": "#b4befe",
+    "black": "#1e1e2e",
     "white": "#FFFFFF",
+    "background": "#6c7086",
 }

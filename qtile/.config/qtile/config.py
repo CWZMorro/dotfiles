@@ -12,12 +12,14 @@ from qtile_extras import widget, bar
 from colors import colors
 
 from widgets import (
-    clockWidgets,
+    dateWidget,
+    timeWidget,
     weatherWidget,
     Systray,
     batteryWidget,
     volumeWidget,
     brightnessWidget,
+    separator,
 )
 import subprocess
 
@@ -216,7 +218,7 @@ layouts = [
 ]
 
 widget_defaults = dict(
-    font="JetBrainsMonoNFM-Regular",
+    font="JetBrainsMono NFM Bold",
     fontsize=15,
     padding=5,
 )
@@ -243,12 +245,19 @@ def init_bar():
                 name_transform=lambda name: name.upper(),
             ),
         ]
-        + Systray(powerLine)
-        + batteryWidget(powerLine)
-        + volumeWidget(powerLine)
-        + brightnessWidget(powerLine)
-        + weatherWidget(powerLine)
-        + clockWidgets(powerLine)
+        + Systray()
+        + separator()
+        + batteryWidget()
+        + separator()
+        + volumeWidget()
+        + separator()
+        + brightnessWidget()
+        + separator()
+        + weatherWidget()
+        + separator()
+        + dateWidget()
+        + separator()
+        + timeWidget()
     )
     return bar.Bar(
         widgets_list,
