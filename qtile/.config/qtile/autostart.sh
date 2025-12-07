@@ -12,3 +12,7 @@ picom -b --config ~/.config/picom/picom.conf
 udiskie &
 # Start notification daemon
 dunst &
+
+# Prevent screen from turning off
+xset s off
+xset -dpms
