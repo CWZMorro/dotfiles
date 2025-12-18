@@ -1,12 +1,12 @@
 import os
 
-from libqtile import layout, qtile, hook
+from libqtile import layout, qtile, hook, bar
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 
 # qtile extra
 from qtile_extras.widget.decorations import PowerLineDecoration
-from qtile_extras import widget, bar
+from qtile_extras import widget
 
 # colors
 from colors import colors
@@ -254,7 +254,7 @@ def init_bar():
     )
     return bar.Bar(
         widgets_list,
-        30,
+        35,
         margin=[5, 8, 3, 8],
         background=colors["black"],
     )
