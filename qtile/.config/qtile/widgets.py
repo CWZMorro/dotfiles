@@ -22,11 +22,11 @@ WEATHER_ICONS = {
 
 def separator():
     return [
-        defWidget.TextBox(
-            text="|",
+        defWidget.Sep(
+            linewidth=2,
             foreground=colors["white"],
-            padding=10,
-            fontsize=14,
+            padding=15,
+            size_percent=60,
         )
     ]
 
@@ -150,7 +150,7 @@ def dateWidget():
             padding=10,
             **underLine(colors["blue"]),
         ),
-    ]
+    ] + separator()
 
 
 def timeWidget():
@@ -159,6 +159,7 @@ def timeWidget():
             background=colors["black"],
             foreground=colors["purple"],
             format="%H:%M",
+            padding=10,
             **underLine(colors["purple"]),
         ),
     ]
@@ -193,8 +194,8 @@ def Systray():
         widget.Systray(
             padding=5,
             icon_size=25,
-        )
-    ]
+        ),
+    ] + separator()
 
 
 def batteryWidget():
@@ -220,7 +221,7 @@ def batteryWidget():
             padding=10,
             **underLine(colors["red"]),
         ),
-    ]
+    ] + separator()
 
 
 def volumeWidget():
@@ -233,7 +234,7 @@ def volumeWidget():
             padding=10,
             **underLine(colors["orange"]),
         ),
-    ]
+    ] + separator()
 
 
 def brightnessWidget():
@@ -248,7 +249,7 @@ def brightnessWidget():
             padding=10,
             **underLine(colors["yellow"]),
         ),
-    ]
+    ] + separator()
 
 
 def weatherWidget():
@@ -262,4 +263,4 @@ def weatherWidget():
             padding=10,
             **underLine(colors["green"]),
         ),
-    ]
+    ] + separator()

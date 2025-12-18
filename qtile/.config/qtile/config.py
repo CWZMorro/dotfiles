@@ -19,7 +19,6 @@ from widgets import (
     batteryWidget,
     volumeWidget,
     brightnessWidget,
-    separator,
 )
 import subprocess
 
@@ -246,17 +245,11 @@ def init_bar():
             ),
         ]
         + Systray()
-        + separator()
         + batteryWidget()
-        + separator()
         + volumeWidget()
-        + separator()
         + brightnessWidget()
-        + separator()
         + weatherWidget()
-        + separator()
         + dateWidget()
-        + separator()
         + timeWidget()
     )
     return bar.Bar(
