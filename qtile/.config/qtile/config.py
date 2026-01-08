@@ -34,8 +34,16 @@ def autorandr(_event):
     subprocess.run(["autorandr", "--change"])
 
 
+def move_to_next_screen(qtile):
+    if qtile.current_window:
+        i = qtile.screens.index(qtile.current_screen)
+        dest = (i + 1) % len(qtile.screens)
+        qtile.current_window.toscreen(dest)
+
+
 mod = "mod4"
 terminal = "kitty"
+
 
 keys = [
     # A list of available commands that can be bound to keys can be found
@@ -80,7 +88,15 @@ keys = [
     ),
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     # Toggle between different layouts as defined below
-    Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
+    # Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
+    # Toggle between screen focus
+    Key([mod], "Tab", lazy.next_screen(), desc="Focus next monitor"),
+    Key(
+        [mod, "shift"],
+        "Tab",
+        lazy.function(move_to_next_screen),
+        desc="Move focus window to next monitor",
+    ),
     Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
     Key(
         [mod],
@@ -88,12 +104,12 @@ keys = [
         lazy.window.toggle_fullscreen(),
         desc="Toggle fullscreen on the focused window",
     ),
-    Key(
-        [mod],
-        "t",
-        lazy.window.toggle_floating(),
-        desc="Toggle floating on the focused window",
-    ),
+    # Key(
+    #     [mod],
+    #     "t",
+    #     lazy.window.toggle_floating(),
+    #     desc="Toggle floating on the focused window",
+    # ),
     Key([mod, "control"], "u", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
@@ -144,15 +160,15 @@ keys = [
 # Add key bindings to switch VTs in Wayland.
 # We can't check qtile.core.name in default config as it is loaded before qtile is started
 # We therefore defer the check until the key binding is run by using .when(func=...)
-for vt in range(1, 8):
-    keys.append(
-        Key(
-            ["control", "mod1"],
-            f"f{vt}",
-            lazy.core.change_vt(vt).when(func=lambda: qtile.core.name == "wayland"),
-            desc=f"Switch to VT{vt}",
-        )
-    )
+# for vt in range(1, 8):
+#     keys.append(
+#         Key(
+#             ["control", "mod1"],
+#             f"f{vt}",
+#             lazy.core.change_vt(vt).when(func=lambda: qtile.core.name == "wayland"),
+#             desc=f"Switch to VT{vt}",
+#         )
+#     )
 
 
 groups = [Group(i) for i in "123456789"]
@@ -232,7 +248,9 @@ powerLine = {
 }
 
 
-def init_bar():
+def init_bar(systray=False):
+    tray = Systray() if systray else []
+
     widgets_list = (
         [
             widget.CurrentLayout(),
@@ -244,7 +262,7 @@ def init_bar():
                 name_transform=lambda name: name.upper(),
             ),
         ]
-        + Systray()
+        + tray
         + batteryWidget()
         + volumeWidget()
         + brightnessWidget()
@@ -262,7 +280,13 @@ def init_bar():
 
 screens = [
     Screen(
-        top=init_bar(),
+        top=init_bar(systray=True),
+        background=colors["black"],
+        wallpaper="~/Downloads/dark mode ver 1.png",
+        wallpaper_mode="fill",
+    ),
+    Screen(
+        top=init_bar(systray=False),
         background=colors["black"],
         wallpaper="~/Downloads/dark mode ver 1.png",
         wallpaper_mode="fill",
