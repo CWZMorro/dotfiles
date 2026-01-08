@@ -248,12 +248,18 @@ powerLine = {
 }
 
 
-def init_bar(systray=False):
+def init_bar(index, systray=False):
+    letter = chr(ord("A") + index)
     tray = Systray() if systray else []
 
     widgets_list = (
         [
-            widget.CurrentLayout(),
+            # widget.CurrentLayout(),
+            widget.TextBox(
+                text=letter,
+                foreground=colors["white"],
+                padding=10,
+            ),
             widget.GroupBox(),
             widget.Prompt(),
             widget.WindowName(),
@@ -280,13 +286,13 @@ def init_bar(systray=False):
 
 screens = [
     Screen(
-        top=init_bar(systray=True),
+        top=init_bar(0, systray=True),
         background=colors["black"],
         wallpaper="~/Downloads/dark mode ver 1.png",
         wallpaper_mode="fill",
     ),
     Screen(
-        top=init_bar(systray=False),
+        top=init_bar(1, systray=False),
         background=colors["black"],
         wallpaper="~/Downloads/dark mode ver 1.png",
         wallpaper_mode="fill",
