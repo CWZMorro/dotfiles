@@ -1,6 +1,6 @@
 import os
 
-from libqtile import layout, qtile, hook, bar
+from libqtile import layout, qtile, hook, bar, widget as defaultWidget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 
@@ -41,28 +41,31 @@ def move_to_next_screen(qtile):
         qtile.current_window.toscreen(dest)
 
 
-class ActiveMonitor(widget.TextBox):
+class ActiveMonitor(defaultWidget.TextBox):
     def __init__(self, **config):
         super().__init__(**config)
 
     def _configure(self, qtile, bar):
         super()._configure(qtile, bar)
-        # Subscribe to hooks to update when screen focus changes
         hook.subscribe.current_screen_change(self.update_text)
         hook.subscribe.startup_complete(self.update_text)
-        # Initial update
-        self.update_text()
+        self.update_text(draw=False)
 
-    def update_text(self, *args):
+    def finalize(self):
+        hook.unsubscribe.current_screen_change(self.update_text)
+        hook.unsubscribe.startup_complete(self.update_text)
+        super().finalize()
+
+    def update_text(self, *args, draw=True):
         try:
             if self.qtile.current_screen:
-                # Get the index of the currently active screen
                 idx = self.qtile.screens.index(self.qtile.current_screen)
-                # Convert 0->A, 1->B, etc.
                 self.text = chr(ord("A") + idx)
             else:
-                self.text = "A"  # Fallback
-            self.bar.draw()
+                self.text = "A"
+
+            if draw:
+                self.bar.draw()
         except Exception:
             pass
 
