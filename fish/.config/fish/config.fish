@@ -16,4 +16,8 @@ if status is-interactive
     alias tmat "tmux attach -t"
     alias qtlog "tail -f ~/.local/share/qtile/qtile.log"
 
+    # Set nvim as the default editor
+    set -gx VISUAL nvim
+    set -gx EDITOR nvim
+
 end
