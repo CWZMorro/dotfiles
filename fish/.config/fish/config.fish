@@ -24,3 +24,6 @@ end
 
 # uv
 fish_add_path "/home/cielarchazure/.local/bin"
+
+# zoxide
+zoxide init fish --cmd cd | source
