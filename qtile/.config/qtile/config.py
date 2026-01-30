@@ -1,4 +1,19 @@
 import os
+import sys
+import site
+
+qtile_path = os.path.dirname(os.path.realpath(__file__))
+
+venv_site_packages = os.path.join(
+    qtile_path,
+    ".venv",
+    "lib",
+    f"python{sys.version_info.major}.{sys.version_info.minor}",
+    "site-packages",
+)
+
+if os.path.exists(venv_site_packages):
+    site.addsitedir(venv_site_packages)
 
 from libqtile import layout, qtile, hook, bar, widget as defaultWidget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen

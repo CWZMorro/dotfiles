@@ -8,7 +8,14 @@ from colors import colors
 import subprocess
 
 import urllib.request
-import xml.etree.ElementTree as ET
+import json
+import os
+import requests
+from dotenv import load_dotenv
+
+# Load the .env file
+env_path = os.path.expanduser("~/.config/qtile/.env")
+load_dotenv(env_path)
 
 WEATHER_ICONS = {
     "default": "",
@@ -71,44 +78,36 @@ def get_weather_condition(condition_text):
 
 def get_edmonton_weather():
     try:
-        # Stable RSS Feed for Edmonton (Blatchford) - (ab-50)
-        url = "https://weather.gc.ca/rss/city/ab-50_e.xml"
+        api_key = os.getenv("WEATHER_API_KEY")
+        if not api_key:
+            return "NO KEY"
 
-        # Use User Agent to prevent the server from blocking the request (403 Error)
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        # Coordinates for Edmonton
+        # Using lat/lon is often more reliable than city names with OpenWeather
+        lat = "53.5461"
+        lon = "-113.4938"
 
-        with urllib.request.urlopen(req, timeout=10) as response:
-            tree = ET.parse(response)
-            root = tree.getroot()
+        url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"
 
-            # RSS feeds use the Atom namespace
-            ns = {"atom": "http://www.w3.org/2005/Atom"}
+        # Using requests (cleaner than urllib)
+        response = requests.get(url, timeout=10)
+        data = response.json()
 
-            # Look for the specific entry titled "Current Conditions"
-            for entry in root.findall("atom:entry", ns):
-                title_node = entry.find("atom:title", ns)
+        # Parse Data
+        temp = data.get("main", {}).get("temp")
+        weather_list = data.get("weather", [])
 
-                if title_node is None:
-                    continue  # Skip if no title found
+        if weather_list:
+            cond = weather_list[0].get("description", "")
+        else:
+            cond = ""
 
-                title = title_node.text
+        if temp is not None:
+            # Use your existing icon helper
+            icon = get_weather_condition(cond)
+            return f"{icon} {int(temp)}°C"
 
-                if title and title.startswith("Current Conditions:"):
-                    data_part = title.split(": ", 1)[1]
-                    parts = data_part.split(", ")
-
-                    if len(parts) >= 2:
-                        condition_text = parts[0]
-                        temp_text = parts[-1]
-                    else:
-                        # Fallback if format is weird (e.g. just temp)
-                        condition_text = "N/A"
-                        temp_text = parts[0]
-
-                    icon = get_weather_condition(condition_text)
-                    return f"{icon} {temp_text}"
-
-            return "N/A"
+        return "N/A"
 
     except Exception:
         return "N/A"
