@@ -12,10 +12,16 @@ import json
 import os
 import requests
 from dotenv import load_dotenv
+import time
 
 # Load the .env file
 env_path = os.path.expanduser("~/.config/qtile/.env")
 load_dotenv(env_path)
+
+icon_font = "JetBrainsMono"
+
+# Global variable for weather updates (in seconds)
+WEATHER_UPDATE_INTERVAL = 600
 
 WEATHER_ICONS = {
     "default": "",
@@ -76,41 +82,49 @@ def get_weather_condition(condition_text):
     return WEATHER_ICONS["default"]
 
 
-def get_edmonton_weather():
+_weather_cache = {"time": 0, "temp": None, "icon": WEATHER_ICONS["default"]}
+
+
+def update_weather_cache():
+    now = time.time()
+    if now - _weather_cache["time"] < WEATHER_UPDATE_INTERVAL:
+        return
+
     try:
         api_key = os.getenv("WEATHER_API_KEY")
         if not api_key:
-            return "NO KEY"
+            return
 
-        # Coordinates for Edmonton
-        # Using lat/lon is often more reliable than city names with OpenWeather
         lat = "53.5461"
         lon = "-113.4938"
-
         url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"
 
-        # Using requests (cleaner than urllib)
         response = requests.get(url, timeout=10)
         data = response.json()
 
-        # Parse Data
         temp = data.get("main", {}).get("temp")
         weather_list = data.get("weather", [])
+        cond = weather_list[0].get("description", "") if weather_list else ""
 
-        if weather_list:
-            cond = weather_list[0].get("description", "")
-        else:
-            cond = ""
-
-        if temp is not None:
-            # Use your existing icon helper
-            icon = get_weather_condition(cond)
-            return f"{icon} {int(temp)}°C"
-
-        return "N/A"
+        _weather_cache["temp"] = temp
+        _weather_cache["icon"] = get_weather_condition(cond)
+        _weather_cache["time"] = now
 
     except Exception:
-        return "N/A"
+        pass
+
+
+def get_weather_icon():
+    update_weather_cache()
+    return _weather_cache["icon"]
+
+
+def get_weather_temp():
+    update_weather_cache()
+    temp = _weather_cache["temp"]
+    if temp is not None:
+        return f"{int(temp)}°C"
+    return "N/A"
 
 
 def underLine(color):
@@ -135,7 +149,7 @@ def get_brightness():
         )
         # The output is the clean percentage number (e.g., "50")
         brightness = result.stdout.strip()
-        return f" {brightness}%"
+        return f"{brightness}%"
     except subprocess.CalledProcessError:
         return "N/A"  # Return N/A if command fails
 
@@ -146,7 +160,7 @@ def dateWidget():
             background=colors["black"],
             foreground=colors["blue"],
             format="%Y-%m-%d %a",
-            padding=10,
+            padding=5,
             **underLine(colors["blue"]),
         ),
     ] + separator()
@@ -217,7 +231,7 @@ def batteryWidget():
             background=colors["black"],
             foreground=colors["red"],
             format="{percent:2.0%}",
-            padding=10,
+            padding=5,
             **underLine(colors["red"]),
         ),
     ] + separator()
@@ -225,12 +239,20 @@ def batteryWidget():
 
 def volumeWidget():
     return [
+        widget.TextBox(
+            text=" ",
+            font=icon_font,
+            background=colors["black"],
+            foreground=colors["orange"],
+            padding=5,
+            **underLine(colors["orange"]),
+        ),
         widget.Volume(
             background=colors["black"],
             foreground=colors["orange"],
-            fmt=" {}",
+            fmt="{}",
             channel="Master",
-            padding=10,
+            padding=5,
             **underLine(colors["orange"]),
         ),
     ] + separator()
@@ -238,6 +260,14 @@ def volumeWidget():
 
 def brightnessWidget():
     return [
+        widget.TextBox(
+            text=" ",
+            font=icon_font,
+            background=colors["black"],
+            foreground=colors["yellow"],
+            padding=5,
+            **underLine(colors["yellow"]),
+        ),
         widget.GenPollText(
             background=colors["black"],
             foreground=colors["yellow"],
@@ -245,7 +275,7 @@ def brightnessWidget():
             func=get_brightness,
             update_interval=0.5,
             format="{}",
-            padding=10,
+            padding=5,
             **underLine(colors["yellow"]),
         ),
     ] + separator()
@@ -256,10 +286,19 @@ def weatherWidget():
         widget.GenPollText(
             background=colors["black"],
             foreground=colors["green"],
-            func=get_edmonton_weather,
-            update_interval=300,  # Update every 5 mins
+            func=get_weather_icon,
+            update_interval=WEATHER_UPDATE_INTERVAL,
+            font=icon_font,
+            padding=5,
+            **underLine(colors["green"]),
+        ),
+        widget.GenPollText(
+            background=colors["black"],
+            foreground=colors["green"],
+            func=get_weather_temp,
+            update_interval=WEATHER_UPDATE_INTERVAL,
             fmt="{}",
-            padding=10,
+            padding=5,
             **underLine(colors["green"]),
         ),
     ] + separator()
