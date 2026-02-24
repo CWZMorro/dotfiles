@@ -6,10 +6,10 @@ blueman-applet &
 
 # Start network manager
 nm-applet &
-volumeicon & #volume control
+volumeicon & # volume control
 
 picom -b --config ~/.config/picom/picom.conf
-udiskie &
+udiskie & # automounter for removable media
 # Start notification daemon
 dunst &
 
