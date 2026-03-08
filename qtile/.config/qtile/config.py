@@ -119,6 +119,9 @@ keys = [
     ),
     Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
+    # Workspace navigation (Used by Touchegg for 3-finger swipes)
+    Key([mod], "Right", lazy.screen.next_group(), desc="Move to next group"),
+    Key([mod], "Left", lazy.screen.prev_group(), desc="Move to previous group"),
     Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed

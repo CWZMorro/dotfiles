@@ -13,6 +13,9 @@ udiskie & # automounter for removable media
 # Start notification daemon
 dunst &
 
+# Start Touchegg for touchpad gestures
+touchegg &
+
 # Prevent screen from turning off
 xset s off
 xset -dpms
