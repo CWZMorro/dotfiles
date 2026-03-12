@@ -2,10 +2,10 @@ if status is-interactive
     function fish_greeting
         set_color normal
         echo "Welcome to a friendly interactive shell~~"
-        set_color yellow
-        echo -n "Note: "
-        set_color normal
-        echo "use 'nvm use lts' to use npm"
+        # set_color yellow
+        # echo -n "Note: "
+        # set_color normal
+        # echo "use 'nvm use lts' to use npm"
     end
 
     alias gpt5.1 "llm chat -m github_copilot/gpt-5.1 -s \"Input short answer.\""
@@ -27,6 +27,15 @@ fish_add_path "/home/cielarchazure/.local/bin"
 
 # zoxide
 zoxide init fish --cmd cd | source
+
+# fastfetch
+if set -q TMUX
+    # Inside Tmux: Disable the logo entirely so the text shifts to the left
+    fastfetch -c ~/.config/fastfetch/minimal.jsonc --logo-type none
+else
+    # Outside Tmux: Use your normal minimal config with the image
+    fastfetch -c ~/.config/fastfetch/minimal.jsonc
+end
 
 # pnpm
 set -gx PNPM_HOME "/home/cielarchazure/.local/share/pnpm"

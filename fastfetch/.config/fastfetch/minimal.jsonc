@@ -1,0 +1,65 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "type": "kitty",
+    "source": "~/.config/fastfetch/MorroPfp.png",
+    "width": 18,
+    "padding": {
+      "top": 2,
+      "left": 2,
+      "right": 2
+    }
+  },
+  "display": {
+    "separator": " "
+  },
+  "modules": [
+    {
+      "type": "custom",
+      "key": "{##626880}╭────────────╮{#}",
+      "format": " "
+    },
+    {
+      "type": "title",
+      "key": "{##626880}│ {##e78284} user     {##626880}│{#}",
+      "format": "Ciel Arch Azure ({user-name})"
+    },
+    {
+      "type": "host",
+      "key": "{##626880}│ {##ef9f76}󰋜 host     {##626880}│{#}"
+    },
+    {
+      "type": "os",
+      "key": "{##626880}│ {##a6d189}󰣇 distro   {##626880}│{#}"
+    },
+    {
+      "type": "kernel",
+      "key": "{##626880}│ {##81c8be}󰒋 kernel   {##626880}│{#}"
+    },
+    {
+      "type": "terminal",
+      "key": "{##626880}│ {##99d1db}󰆍 term     {##626880}│{#}"
+    },
+    {
+      "type": "shell",
+      "key": "{##626880}│ {##8caaee}󰞷 shell    {##626880}│{#}"
+    },
+    {
+      "type": "cpu",
+      "key": "{##626880}│ {##babbf1} cpu      {##626880}│{#}"
+    },
+    {
+      "type": "disk",
+      "key": "{##626880}│ {##ca9ee6}󰋊 disk     {##626880}│{#}"
+    },
+    {
+      "type": "memory",
+      "key": "{##626880}│ {##f4b8e4}󰍛 memory   {##626880}│{#}"
+    },
+    {
+      "type": "custom",
+      "key": "{##626880}╰────────────╯{#}",
+      "format": " "
+    }
+  ]
+}
