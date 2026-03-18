@@ -30,16 +30,30 @@ zoxide init fish --cmd cd | source
 
 # fastfetch
 if set -q TMUX
-    # Inside Tmux: Disable the logo entirely so the text shifts to the left
     fastfetch -c ~/.config/fastfetch/minimal.jsonc --logo-type none
 else
-    # Outside Tmux: Use your normal minimal config with the image
     fastfetch -c ~/.config/fastfetch/minimal.jsonc
 end
+
+# ranger
+function ranger-cd
+    set -l tmpfile (mktemp -t "ranger-cd.XXXXXX")
+    command ranger --choosedir=$tmpfile $argv
+    if test -s $tmpfile
+        set -l ranger_pwd (cat $tmpfile)
+        if test "$ranger_pwd" != "$PWD"
+            cd $ranger_pwd
+        end
+    end
+    rm -f $tmpfile
+
+    # tells Fish to redraw the command line prompt 
+    commandline -f repaint
+end
+bind \co ranger-cd
 
 # pnpm
 set -gx PNPM_HOME "/home/cielarchazure/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
     set -gx PATH "$PNPM_HOME" $PATH
 end
-# pnpm end
