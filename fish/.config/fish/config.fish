@@ -52,6 +52,11 @@ function ranger-cd
 end
 bind \co ranger-cd
 
+# eza
+alias ls="eza --color=always --icons=always"
+alias ll="eza -lg --color=always --icons=always"
+alias lt="eza --tree --color=always --icons=always"
+
 # pnpm
 set -gx PNPM_HOME "/home/cielarchazure/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
