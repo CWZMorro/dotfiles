@@ -36,18 +36,16 @@ else
 end
 
 # ranger
-function ranger-cd
+function ranger --wraps=ranger --description="Run ranger and cd into last dir on exit"
     set -l tmpfile (mktemp -t "ranger-cd.XXXXXX")
     command ranger --choosedir=$tmpfile $argv
     if test -s $tmpfile
-        set -l ranger_pwd (cat $tmpfile)
+        read -l ranger_pwd <$tmpfile
         if test "$ranger_pwd" != "$PWD"
-            cd $ranger_pwd
+            builtin cd "$ranger_pwd"
         end
     end
     rm -f $tmpfile
-
-    # tells Fish to redraw the command line prompt 
     commandline -f repaint
 end
 bind \co ranger-cd
