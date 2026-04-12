@@ -1,18 +1,16 @@
 # ~/.config/betterlockscreenrc
 
-# default options
 display_on=0
-span_image=false
+span_image=true
 lock_timeout=300
 fx_list=(dim blur dimblur pixel dimpixel color)
-dim_level=0.3
+dim_level=30
 blur_level=0
 pixel_scale=10,1000
 solid_color=333333
 wallpaper_cmd="feh --bg-fill"
 quiet=false
 
-# default theme
 loginbox=00000066
 loginshadow=00000000
 locktext="Morro's Arch Linux"
