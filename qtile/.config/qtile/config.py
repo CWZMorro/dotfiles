@@ -162,7 +162,7 @@ keys = [
     Key(
         [mod, "control"],
         "l",
-        lazy.spawn("betterlockscreen -l"),
+        lazy.spawn("betterlockscreen -l dim"),
         desc="Go to lockscreen",
     ),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
