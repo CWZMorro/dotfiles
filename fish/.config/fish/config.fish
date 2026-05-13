@@ -1,4 +1,7 @@
 if status is-interactive
+    # fzf (https://github.com/junegunn/fzf#setting-up-shell-integration)
+    fzf --fish | source
+
     function fish_greeting
         set_color normal
         echo "Welcome to a friendly interactive shell~~"
