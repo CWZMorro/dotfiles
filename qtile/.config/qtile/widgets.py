@@ -10,13 +10,22 @@ import subprocess
 import urllib.request
 import json
 import os
-import requests
-from dotenv import load_dotenv
 import time
 
-# Load the .env file
-env_path = os.path.expanduser("~/.config/qtile/.env")
-load_dotenv(env_path)
+
+def _load_env(path):
+    try:
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+    except FileNotFoundError:
+        pass
+
+
+_load_env(os.path.expanduser("~/.config/qtile/.env"))
 
 icon_font = "JetBrainsMono"
 
@@ -99,8 +108,8 @@ def update_weather_cache():
         lon = "-113.4938"
         url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"
 
-        response = requests.get(url, timeout=10)
-        data = response.json()
+        with urllib.request.urlopen(url, timeout=10) as resp:
+            data = json.loads(resp.read().decode())
 
         temp = data.get("main", {}).get("temp")
         weather_list = data.get("weather", [])
