@@ -32,7 +32,7 @@ fish_add_path "/home/cielarchazure/.local/bin"
 zoxide init fish --cmd cd | source
 
 # fastfetch
-if set -q TMUX
+if set -q TMUX; or set -q ZELLIJ
     fastfetch -c ~/.config/fastfetch/minimal.jsonc --logo-type none
 else
     fastfetch -c ~/.config/fastfetch/minimal.jsonc
