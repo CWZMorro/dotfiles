@@ -238,7 +238,7 @@ for i in groups:
 layoutFormat = {
     "border_width": 4,
     "margin": 2,
-    "border_focus": colors["purple"],
+    "border_focus": colors["red"],
     "border_normal": colors["black"],
 }
 
