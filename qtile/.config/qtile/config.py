@@ -121,7 +121,8 @@ keys = [
     # Toggle between different layouts as defined below
     # Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     # Toggle between screen focus
-    Key([mod], "Tab", lazy.next_screen(), desc="Focus next monitor"),
+    Key([mod], "comma", lazy.prev_screen(), desc="Focus next monitor"),
+    Key([mod], "period", lazy.next_screen(), desc="Focus next monitor"),
     Key(
         [mod, "shift"],
         "Tab",
