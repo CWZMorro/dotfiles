@@ -40,7 +40,7 @@ def move_to_next_screen(qtile):
         qtile.current_window.toscreen(dest)
 
 
-class ActiveMonitor(defaultWidget.TextBox):
+class ActiveMonitor(widget.TextBox):
     def __init__(self, **config):
         super().__init__(**config)
 
