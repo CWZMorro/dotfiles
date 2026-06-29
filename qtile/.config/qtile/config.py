@@ -106,7 +106,6 @@ keys = [
     # Workspace navigation (Used by Touchegg for 3-finger swipes)
     Key([mod], "Right", lazy.screen.next_group(), desc="Move to next group"),
     Key([mod], "Left", lazy.screen.prev_group(), desc="Move to previous group"),
-    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
@@ -152,6 +151,7 @@ keys = [
     ),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([mod], "d", lazy.spawn("rofi -show drun"), desc="Launch rofi"),
+    Key([mod], "n", lazy.spawn("flatpak run com.logseq.Logseq"), desc="Launch logseq"),
     Key(
         [],
         "Print",
