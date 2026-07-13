@@ -58,6 +58,10 @@ alias ls="eza --color=always --icons=always"
 alias ll="eza -lg --color=always --icons=always"
 alias lt="eza --tree --color=always --icons=always"
 
+# NOTE: now handled hatively by functions/fish_prompt.fish
+# starship
+# starship init fish | source
+
 # pnpm
 set -gx PNPM_HOME "/home/cielarchazure/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
