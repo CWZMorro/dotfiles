@@ -153,6 +153,12 @@ keys = [
     Key([mod], "d", lazy.spawn("rofi -show drun"), desc="Launch rofi"),
     Key([mod], "n", lazy.spawn("flatpak run com.logseq.Logseq"), desc="Launch logseq"),
     Key(
+        [mod],
+        "m",
+        lazy.spawn("flatpak run com.modrinth.ModrinthApp"),
+        desc="Launch modrinth",
+    ),
+    Key(
         [],
         "Print",
         lazy.spawn("sh -c 'maim -s | xclip -selection clipboard -t image/png'"),
