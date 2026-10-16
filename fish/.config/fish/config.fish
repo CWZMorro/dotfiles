@@ -11,8 +11,16 @@ if status is-interactive
         # echo "use 'nvm use lts' to use npm"
     end
 
-    alias gpt5.1 "llm chat -m github_copilot/gpt-5.1 -s \"Input short answer.\""
-    alias gPro "uvx llm chat -m github_copilot/gemini-2.5-pro -s \"Input long answer.\""
+    function cielmacazure
+        ssh mac
+    end
+
+    function heylaunbuntuazure
+	ssh ubuntu
+    end
+
+    # alias gpt5.1 "llm chat -m github_copilot/gpt-5.1 -s \"Input short answer.\""
+    # alias gPro "uvx llm chat -m github_copilot/gemini-2.5-pro -s \"Input long answer.\""
     alias bonsai "cbonsai -li"
     alias weather "curl -s https://weather.gc.ca/rss/city/ab-50_e.xml | grep \"Current Conditions\""
     alias lg lazygit
